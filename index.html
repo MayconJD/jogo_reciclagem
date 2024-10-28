@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recicla.me</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Tela Inicial -->
+        <section id="start-screen" class="screen">
+            <h1 id="game-title">Recicla.me</h1>
+            <div class="play-button" onclick="startGame()">Jogar</div>
+        </section>
+
+        <!-- Tela de Jogo -->
+        <section id="play-screen" class="screen hidden">
+            <div id="countdown">3</div>
+            <div id="timer" class="info">Tempo: 30s</div>
+            <div id="score" class="info">Pontuação: 0</div>
+            <!-- Mensagem de feedback -->
+            <div id="feedback-message"></div>
+            <div id="bins">
+                <div class="bin" data-type="papel">Papel</div>
+                <div class="bin" data-type="plastico">Plástico</div>
+                <div class="bin" data-type="vidro">Vidro</div>
+                <div class="bin" data-type="metal">Metal</div>
+                <div class="bin" data-type="organico">Orgânico</div>
+            </div>
+            <div id="item">Item</div>
+        </section>
+
+        <!-- Tela de Fim de Jogo -->
+        <section id="end-screen" class="screen hidden">
+            <div id="final-score"></div>
+            <button class="play-button" onclick="resetGame()">Jogar Novamente</button>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

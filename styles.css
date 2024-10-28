@@ -1,0 +1,105 @@
+body {
+    font-family: 'DotGothic16', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #000;
+    color: #fff;
+    margin: 0;
+}
+
+#game-container {
+    text-align: center;
+    max-width: 500px;
+}
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden {
+    display: none;
+}
+
+#game-title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.play-button {
+    width: 200px;
+    height: 60px;
+    font-size: 1.5rem;
+    background-color: #fff;
+    color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+    margin-top: 15px;
+}
+
+.play-button:hover {
+    background-color: #ccc;
+}
+
+.info {
+    font-size: 1.2rem;
+    position: absolute;
+    color: #fff;
+}
+
+#timer { top: 10px; left: 10px; }
+#score { top: 10px; right: 10px; }
+
+#bins {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.bin {
+    width: 48%;
+    height: 180px;
+    margin: 10px;
+    font-size: 1.5rem;
+    border: 4px solid;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+[data-type="papel"] { border-color: blue; }
+[data-type="plastico"] { border-color: red; }
+[data-type="vidro"] { border-color: green; }
+[data-type="metal"] { border-color: yellow; }
+[data-type="organico"] { border-color: brown; }
+
+#item {
+    margin-top: 30px;
+    font-size: 2rem;
+}
+
+#feedback-message {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#feedback-message.correct {
+    color: green;
+}
+
+#feedback-message.incorrect {
+    color: red;
+}

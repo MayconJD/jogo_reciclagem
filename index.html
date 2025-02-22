@@ -12,7 +12,13 @@
         <!-- Tela Inicial -->
         <section id="start-screen" class="screen">
             <h1 id="game-title">Recicla.me</h1>
+            <div id="difficulty-selection">
+                <button class="difficulty-button selected" onclick="selectDifficulty('easy')">Fácil</button>
+                <button class="difficulty-button" onclick="selectDifficulty('medium')">Médio</button>
+                <button class="difficulty-button" onclick="selectDifficulty('hard')">Difícil</button>
+            </div>
             <div class="play-button" onclick="startGame()">Jogar</div>
+            <div class="play-button" onclick="showRecyclingInfo()">Como Reciclar?</div>
         </section>
 
         <!-- Tela de Jogo -->
@@ -20,6 +26,7 @@
             <div id="countdown">3</div>
             <div id="timer" class="info">Tempo: 30s</div>
             <div id="score" class="info">Pontuação: 0</div>
+            <div id="error-message" class="info hidden"></div>
             <!-- Mensagem de feedback -->
             <div id="feedback-message"></div>
             <div id="bins">
@@ -36,6 +43,32 @@
         <section id="end-screen" class="screen hidden">
             <div id="final-score"></div>
             <button class="play-button" onclick="resetGame()">Jogar Novamente</button>
+            <div class="play-button" onclick="showRecyclingInfo()">Saiba como Reciclar!</div>
+        </section>
+
+        <!-- Tela de Informações sobre Reciclagem -->
+        <section id="recycling-info" class="screen hidden">
+            <button class="play-button" onclick="goBack()">Voltar</button>
+            <h2>O que é Reciclagem?</h2>
+            <p>A reciclagem é o processo de transformar materiais que seriam considerados lixo em novos produtos. Isso ajuda a reduzir o consumo de recursos naturais e a diminuir a quantidade de resíduos que vão para os aterros sanitários.</p>
+            <h3>Importância da Reciclagem</h3>
+            <p>A reciclagem é importante porque:</p>
+            <ul>
+                <li>Reduz a quantidade de resíduos sólidos.</li>
+                <li>Conserva recursos naturais.</li>
+                <li>Economiza energia.</li>
+                <li>Reduz a poluição.</li>
+                <li>Cria empregos na indústria de reciclagem.</li>
+            </ul>
+            <h3>Guia de Reciclagem</h3>
+            <p>Veja abaixo quais tipos de lixo vão em cada lixeira:</p>
+            <ul>
+                <li><strong>Papel:</strong> Folhas de papel, cadernos, caixas de papelão, jornal, revistas.</li>
+                <li><strong>Plástico:</strong> Garrafas PET, sacos plásticos, embalagens de iogurte, tampas de garrafa.</li>
+                <li><strong>Vidro:</strong> Garrafas de vidro, frascos de conserva, copos de vidro.</li>
+                <li><strong>Metal:</strong> Latas de refrigerante, latas de cerveja, latas de alimentos.</li>
+                <li><strong>Orgânico:</strong> Restos de comida, cascas de frutas, restos de verduras.</li>
+            </ul>
         </section>
     </div>
 

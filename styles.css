@@ -30,6 +30,32 @@ body {
     margin-bottom: 20px;
 }
 
+#difficulty-selection {
+    margin: 20px 0;
+}
+
+.difficulty-button {
+    width: 100px;
+    height: 50px;
+    font-size: 1.2rem;
+    font-family: 'DotGothic16', sans-serif;
+    background-color: #fff;
+    color: #000;
+    border: none;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: background-color 0.3s;
+}
+
+.difficulty-button:hover {
+    background-color: #ccc;
+}
+
+.difficulty-button.selected {
+    background-color: #007BFF;
+    color: #fff;
+}
+
 .play-button {
     width: 200px;
     height: 60px;
@@ -57,6 +83,14 @@ body {
 
 #timer { top: 10px; left: 10px; }
 #score { top: 10px; right: 10px; }
+#error-message {
+    font-size: 1.5rem;
+    color: red;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
 
 #bins {
     display: flex;
@@ -102,4 +136,17 @@ body {
 
 #feedback-message.incorrect {
     color: red;
+}
+
+#recycling-info {
+    text-align: left;
+    padding: 20px;
+}
+
+#recycling-info h2, #recycling-info h3 {
+    margin-top: 20px;
+}
+
+#recycling-info ul {
+    margin-left: 20px;
 }

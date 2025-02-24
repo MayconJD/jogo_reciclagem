@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recicla.me</title>
+    <style>
+        body {
+            font-family: 'DotGothic16', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            background-color: #000;
+            color: #fff;
+        }
+
+        #game-container {
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .screen {
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+#start-screen, #recycling-info {
+    background-image: url('tela_inicial.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+
+
+        #play-screen, #end-screen {
+            background-image: url('tela_play.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 100vw;
+            min-height: 100vh;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #game-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        #difficulty-selection {
+            margin: 20px 0;
+        }
+
+        .difficulty-button {
+            width: 100px;
+            height: 50px;
+            font-size: 1.2rem;
+            font-family: 'DotGothic16', sans-serif;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #000;
+            border: none;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s;
+        }
+
+        .difficulty-button:hover {
+            background-color: rgba(204, 204, 204, 0.9);
+        }
+
+        .difficulty-button.selected {
+            background-color: #007BFF;
+            color: #fff;
+        }
+
+        .play-button {
+            width: 200px;
+            height: 60px;
+            font-size: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+
+        .play-button:hover {
+            background-color: rgba(204, 204, 204, 0.9);
+        }
+
+        .info {
+            font-size: 1.2rem;
+            position: absolute;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        #timer { top: 10px; left: 10px; }
+        #score { top: 10px; right: 10px; }
+        
+        #error-message {
+            font-size: 1.5rem;
+            color: red;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        #bins {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 50px;
+            padding: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .bin {
+            width: 120px;
+            height: 120px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .bin:hover {
+            transform: none;
+        }
+
+        [data-type="papel"] { background-image: url('papel.png'); }
+        [data-type="plastico"] { background-image: url('plastico.png'); }
+        [data-type="vidro"] { background-image: url('vidro.png'); }
+        [data-type="metal"] { background-image: url('metal.png'); }
+        [data-type="organico"] { background-image: url('organico.png'); }
+
+        #item {
+            margin-top: 30px;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            background: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        #feedback-message {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background-color: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 2.5rem;
+    text-align: center;
+    z-index: 2;
+}
+
+        #feedback-message.correct { color: #00ff00; }
+        #feedback-message.incorrect { color: #ff0000; }
+
+        #recycling-info {
+            text-align: left;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        #recycling-info h2, #recycling-info h3 {
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        #recycling-info ul {
+            margin-left: 20px;
+        }
+
+        #recycling-info p, #recycling-info li {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        #countdown {
+            font-size: 5rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            #bins {
+                gap: 10px;
+                padding: 10px;
+            }
+
+            .bin {
+                width: 80px;
+                height: 80px;
+            }
+
+            #game-title {
+                font-size: 2rem;
+            }
+
+            .play-button {
+                width: 180px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #bins {
+                gap: 5px;
+            }
+
+            .bin {
+                width: 60px;
+                height: 60px;
+            }
+
+            #game-title {
+                font-size: 1.5rem;
+            }
+
+            .play-button {
+                width: 150px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .difficulty-button {
+                width: 80px;
+                height: 40px;
+                font-size: 1rem;
+                margin: 0 5px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+</head>
+<body onload="rotateScreen()">
+    <div id="game-container">
+        <!-- Tela Inicial -->
+        <section id="start-screen" class="screen">
+            <!-- Logo -->
+            <img src="logo.png" alt="Logo Recicla.me" style="width: 200px; margin-bottom: 0px;">
+            
+            <h1 id="game-title">Recicla.me</h1>
+            <div id="difficulty-selection">
+                <button class="difficulty-button selected" onclick="selectDifficulty('easy')">Fácil</button>
+                <button class="difficulty-button" onclick="selectDifficulty('medium')">Médio</button>
+                <button class="difficulty-button" onclick="selectDifficulty('hard')">Difícil</button>
+            </div>
+            <div class="play-button" onclick="startGame()">Jogar</div>
+            <div class="play-button" onclick="showRecyclingInfo()">Como Reciclar?</div>
+        </section>
+
+        <!-- Tela de Jogo -->
+        <section id="play-screen" class="screen hidden">
+            <div id="countdown">3</div>
+            <div id="timer" class="info">Tempo: 30s</div>
+            <div id="score" class="info">Pontuação: 0</div>
+            <div id="error-message" class="info hidden"></div>
+            <div id="feedback-message"></div>
+            <div id="bins">
+                <div class="bin" data-type="papel"></div>
+                <div class="bin" data-type="plastico"></div>
+                <div class="bin" data-type="vidro"></div>
+                <div class="bin" data-type="metal"></div>
+                <div class="bin" data-type="organico"></div>
+            </div>
+            <div id="item">Item</div>
+        </section>
+
+        <!-- Tela de Fim de Jogo -->
+        <section id="end-screen" class="screen hidden">
+            <div id="final-score"></div>
+            <button class="play-button" onclick="resetGame()">Jogar Novamente</button>
+            <div class="play-button" onclick="showRecyclingInfo()">Como Reciclar?</div>
+        </section>
+
+        <!-- Tela de Informações sobre Reciclagem -->
+        <section id="recycling-info" class="screen hidden">
+            <button class="play-button" onclick="goBack()">Voltar</button>
+            <h2>O que é Reciclagem?</h2>
+            <p>A reciclagem é o processo de transformar materiais que seriam considerados lixo em novos produtos. Isso ajuda a reduzir o consumo de recursos naturais e a diminuir a quantidade de resíduos que vão para os aterros sanitários.</p>
+            <h3>Importância da Reciclagem</h3>
+            <p>A reciclagem é importante porque:</p>
+            <ul>
+                <li>Reduz a quantidade de resíduos sólidos.</li>
+                <li>Conserva recursos naturais.</li>
+                <li>Economiza energia.</li>
+                <li>Reduz a poluição.</li>
+                <li>Cria empregos na indústria de reciclagem.</li>
+            </ul>
+            <h3>Guia de Reciclagem</h3>
+            <p>Veja abaixo quais tipos de lixo vão em cada lixeira:</p>
+            <ul>
+                <li><strong>Papel:</strong> Folhas de papel, cadernos, caixas de papelão, jornal, revistas.</li>
+                <li><strong>Plástico:</strong> Garrafas PET, sacos plásticos, embalagens de iogurte, tampas de garrafa.</li>
+                <li><strong>Vidro:</strong> Garrafas de vidro, frascos de conserva, copos de vidro.</li>
+                <li><strong>Metal:</strong> Latas de refrigerante, latas de cerveja, latas de alimentos.</li>
+                <li><strong>Orgânico:</strong> Restos de comida, cascas de frutas, restos de verduras.</li>
+            </ul>
+        </section>
+    </div>
+
+    <script>
+        function rotateScreen() {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock("landscape").catch(() => {
+                    alert("Por favor, gire seu dispositivo para o modo paisagem para jogar corretamente.");
+                });
+            } else {
+                alert("Seu dispositivo pode não suportar rotação automática. Gire-o manualmente para paisagem.");
+            }
+        }
+let score = 0;
+let timeLeft;
+let countdownInterval;
+let timerInterval;
+let lastItemIndex = -1;
+let errors = 0;
+let timeIncrement;
+let selectedDifficulty = 'easy';
+let backgroundMusic;
+
+// Carregando os sons
+const sounds = {
+    inicial: new Audio('inicial.mp3'),
+    playgame: new Audio('playgame.mp3'),
+    pos: new Audio('pos.mp3'),
+    acerto: new Audio('acerto.wav'),
+    erro: new Audio('erro.wav')
+};
+
+// Array de itens mantido igual ao original
+
+function selectDifficulty(difficulty) {
+    selectedDifficulty = difficulty;
+    const buttons = document.querySelectorAll('.difficulty-button');
+    buttons.forEach(button => {
+        button.classList.remove('selected');
+    });
+    document.querySelector(`.difficulty-button[onclick*='${difficulty}']`).classList.add('selected');
+}
+
+function startGame() {
+    stopAllSounds();
+    sounds.playgame.loop = true;
+    sounds.playgame.play();
+    
+    setGameDifficulty(selectedDifficulty);
+    document.getElementById("start-screen").classList.add("hidden");
+    document.getElementById("play-screen").classList.remove("hidden");
+    startCountdown();
+}
+
+function stopAllSounds() {
+    Object.values(sounds).forEach(sound => {
+        sound.pause();
+        sound.currentTime = 0;
+    });
+}
+
+function setGameDifficulty(difficulty) {
+    if (difficulty === "easy") {
+        timeLeft = 30;
+        timeIncrement = 5;
+    } else if (difficulty === "medium") {
+        timeLeft = 20;
+        timeIncrement = 3;
+    } else if (difficulty === "hard") {
+        timeLeft = 10;
+        timeIncrement = 1;
+    }
+}
+
+function startCountdown() {
+    let count = 3;
+    document.getElementById("countdown").textContent = count;
+    countdownInterval = setInterval(() => {
+        count--;
+        document.getElementById("countdown").textContent = count;
+        if (count <= 0) {
+            clearInterval(countdownInterval);
+            document.getElementById("countdown").classList.add("hidden");
+            startTimer();
+            generateItem();
+        }
+    }, 1000);
+}
+
+function startTimer() {
+    document.getElementById("timer").textContent = `Tempo: ${timeLeft}s`;
+    document.getElementById("score").textContent = "Pontuação: 0";
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").textContent = `Tempo: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+            endGame();
+        }
+    }, 1000);
+}
+
+function generateItem() {
+    let newItemIndex;
+    do {
+        newItemIndex = Math.floor(Math.random() * items.length);
+    } while (newItemIndex === lastItemIndex);
+
+    lastItemIndex = newItemIndex;
+    const randomItem = items[newItemIndex];
+    document.getElementById("item").textContent = randomItem.name;
+    document.getElementById("item").dataset.type = randomItem.type;
+}
+
+function showFeedback(isCorrect) {
+    const feedbackMessage = document.getElementById("feedback-message");
+    feedbackMessage.textContent = isCorrect ? "Correto!" : "Incorreto!";
+    feedbackMessage.className = isCorrect ? "correct" : "incorrect";
+    setTimeout(() => feedbackMessage.textContent = "", 1000);
+}
+
+function showRecyclingInfo() {
+    stopAllSounds();
+    sounds.inicial.loop = true;
+    sounds.inicial.play();
+    
+    document.getElementById("start-screen").classList.add("hidden");
+    document.getElementById("play-screen").classList.add("hidden");
+    document.getElementById("end-screen").classList.add("hidden");
+    document.getElementById("recycling-info").classList.remove("hidden");
+}
+
+function goBack() {
+    document.getElementById("recycling-info").classList.add("hidden");
+    document.getElementById("start-screen").classList.remove("hidden");
+}
+
+document.querySelectorAll(".bin").forEach(bin => {
+    bin.addEventListener("click", (event) => {
+        const selectedBin = event.currentTarget.dataset.type;
+        const currentItem = document.getElementById("item").dataset.type;
+        if (selectedBin === currentItem) {
+            sounds.acerto.play();
+            score++;
+            timeLeft += timeIncrement;
+            document.getElementById("score").textContent = `Pontuação: ${score}`;
+            showFeedback(true);
+        } else {
+            sounds.erro.play();
+            errors++;
+            showFeedback(false);
+            showErrorCount();
+            if (errors >= 3) {
+                endGame();
+            }
+        }
+        generateItem();
+    });
+});
+
+function showErrorCount() {
+    const errorMessage = document.getElementById("error-message");
+    errorMessage.textContent = `Erros: ${errors}`;
+    errorMessage.classList.remove("hidden");
+    setTimeout(() => errorMessage.textContent = "", 2000);
+}
+
+function endGame() {
+    stopAllSounds();
+    sounds.pos.play();
+    
+    clearInterval(timerInterval);
+    document.getElementById("play-screen").classList.add("hidden");
+    document.getElementById("end-screen").classList.remove("hidden");
+    document.getElementById("final-score").textContent = `Sua pontuação: ${score}`;
+}
+
+function resetGame() {
+    stopAllSounds();
+    sounds.inicial.loop = true;
+    sounds.inicial.play();
+    
+    score = 0;
+    errors = 0;
+    document.getElementById("error-message").classList.add("hidden");
+    document.getElementById("countdown").classList.remove("hidden");
+    document.getElementById("end-screen").classList.add("hidden");
+    document.getElementById("start-screen").classList.remove("hidden");
+}
+
+// Array de itens
+const items = [
+    { name: "Folha de Papel", type: "papel" },
+    { name: "Caderno Velho", type: "papel" },
+    { name: "Revista", type: "papel" },
+    { name: "Jornal", type: "papel" },
+    { name: "Caixa de Papelão", type: "papel" },
+    { name: "Envelope", type: "papel" },
+    { name: "Papel de Presente", type: "papel" },
+    { name: "Rascunho de Papel", type: "papel" },
+    { name: "Papel Higiênico (usado)", type: "papel" },
+    { name: "Cartão de Visita", type: "papel" },
+    { name: "Papel Sulfite", type: "papel" },
+    { name: "Papel de Impressão", type: "papel" },
+    { name: "Papel de Caderno", type: "papel" },
+    { name: "Papel de Cartão", type: "papel" },
+    { name: "Papel de Embalagem", type: "papel" },
+
+    { name: "Garrafa PET", type: "plastico" },
+    { name: "Saco Plástico", type: "plastico" },
+    { name: "Tampa de Garrafa", type: "plastico" },
+    { name: "Embalagem de Iogurte", type: "plastico" },
+    { name: "Embalagem de Refrigerante", type: "plastico" },
+    { name: "Embalagem de Alimento", type: "plastico" },
+    { name: "Canudo", type: "plastico" },
+    { name: "Balde de Plástico", type: "plastico" },
+    { name: "Frasco de Detergente", type: "plastico" },
+    { name: "Embalagem de Sabonete Líquido", type: "plastico" },
+    { name: "Embalagem de Shampoo", type: "plastico" },
+    { name: "Embalagem de Condicionador", type: "plastico" },
+    { name: "Embalagem de Creme Dental", type: "plastico" },
+    { name: "Embalagem de Produtos de Limpeza", type: "plastico" },
+    { name: "Embalagem de Sorvete", type: "plastico" },
+
+    { name: "Copo Quebrado", type: "vidro" },
+    { name: "Garrafa de Vidro", type: "vidro" },
+    { name: "Frasco de Conserva", type: "vidro" },
+    { name: "Vidro de Perfume", type: "vidro" },
+    { name: "Frasco de Molho", type: "vidro" },
+    { name: "Pote de Vidro", type: "vidro" },
+    { name: "Copo de Vidro", type: "vidro" },
+    { name: "Lata de Vidro", type: "vidro" },
+    { name: "Vidro de Azeite", type: "vidro" },
+    { name: "Vidro de Vinagre", type: "vidro" },
+    { name: "Vidro de Bebida", type: "vidro" },
+    { name: "Vidro de Conserva", type: "vidro" },
+    { name: "Vidro de Sucos", type: "vidro" },
+    { name: "Vidro de Água", type: "vidro" },
+    { name: "Vidro de Refrigerante", type: "vidro" },
+
+    { name: "Lata de Refrigerante", type: "metal" },
+    { name: "Lata de Cerveja", type: "metal" },
+    { name: "Lata de Sopa", type: "metal" },
+    { name: "Lata de Alimento", type: "metal" },
+    { name: "Lata de Tinta", type: "metal" },
+    { name: "Lata de Óleo", type: "metal" },
+    { name: "Lata de Conserva", type: "metal" },
+    { name: "Tampa de Lata", type: "metal" },
+    { name: "Lata de Produtos de Limpeza", type: "metal" },
+    { name: "Lata de Bebida", type: "metal" },
+    { name: "Lata de Molho", type: "metal" },
+    { name: "Lata de Frutas", type: "metal" },
+    { name: "Lata de Vegetais", type: "metal" },
+    { name: "Lata de Sucos", type: "metal" },
+    { name: "Lata de Energético", type: "metal" },
+
+    { name: "Casca de Banana", type: "organico" },
+    { name: "Restos de Comida", type: "organico" },
+    { name: "Bagaço de Fruta", type: "organico" },
+    { name: "Folhas de Verdura", type: "organico" },
+    { name: "Cascas de Legumes", type: "organico" },
+    { name: "Café Usado", type: "organico" },
+    { name: "Chá Usado", type: "organico" },
+    { name: "Restos de Salada", type: "organico" },
+    { name: "Papel toalha usado", type: "organico" },
+    { name: "Restos de Pão", type: "organico" },
+    { name: "Casca de Ovo", type: "organico" },
+    { name: "Restos de Carne", type: "organico" },
+    { name: "Restos de Peixe", type: "organico" },
+    { name: "Restos de Arroz", type: "organico" },
+    { name: "Restos de Feijão", type: "organico" }
+];
+
+// Iniciar música da tela inicial quando a página carregar
+window.addEventListener('load', () => {
+    sounds.inicial.loop = true;
+    sounds.inicial.play();
+});
+    </script>
+</body>
+</html>
